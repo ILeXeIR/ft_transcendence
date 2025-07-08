@@ -61,9 +61,13 @@ export async function createNotificationSocket () {
 }
 
 
-async function handleFriendshipRequest(data) {
+export const handleFriendshipRequest = debugWrap(false, handleFriendshipRequest_original_func, "handleFriendshipRequest", "orange", DEBUGSOCKET);
+
+
+async function handleFriendshipRequest_original_func(data) {
     const request_status = data.request_status;
     const username = data.username;
+    console.log("data; ", data)
 
     switch (request_status) {
         case "new": {

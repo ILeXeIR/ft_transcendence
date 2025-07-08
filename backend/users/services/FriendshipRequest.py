@@ -4,13 +4,8 @@ from django.db.models import Prefetch
 
 from .UserProfile import UserProfileService
 from ..models import FriendshipRequest, UserProfile
-<<<<<<< HEAD
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
-=======
 from ..utils import notify_about_friendship_requests
 
->>>>>>> alex/backend_friendship_request_notifications
 
 class FriendshipRequestService:
     @staticmethod
@@ -81,27 +76,27 @@ class FriendshipRequestService:
         )
 
         # WebSocket live update
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            f"user_{str(to_user.id)}",
-            {
-                "type": "rejected_friend_request",
-                "payload": {
-                    "from_user_id": str(request.from_user.id),
-                    "from_user_username": str(request.from_user.username),
-                }
-            }
-        )
-        async_to_sync(channel_layer.group_send)(
-            f"user_{str(request.from_user.id)}",
-            {
-                "type": "rejected_friend_request",
-                "payload": {
-                    "to_user_id": str(to_user.id),
-                    "to_user_username": to_user.username,
-                }
-            }
-        )
+        # channel_layer = get_channel_layer()
+        # async_to_sync(channel_layer.group_send)(
+        #     f"user_{str(to_user.id)}",
+        #     {
+        #         "type": "rejected_friend_request",
+        #         "payload": {
+        #             "from_user_id": str(request.from_user.id),
+        #             "from_user_username": str(request.from_user.username),
+        #         }
+        #     }
+        # )
+        # async_to_sync(channel_layer.group_send)(
+        #     f"user_{str(request.from_user.id)}",
+        #     {
+        #         "type": "rejected_friend_request",
+        #         "payload": {
+        #             "to_user_id": str(to_user.id),
+        #             "to_user_username": to_user.username,
+        #         }
+        #     }
+        # )
 
     @staticmethod
     @transaction.atomic
@@ -124,28 +119,28 @@ class FriendshipRequestService:
         )
 
         # WebSocket live Update
-        channel_layer = get_channel_layer()
-        print("print.. cancelled friend request registered")
-        async_to_sync(channel_layer.group_send)(
-            f"user_{str(request.to_user.id)}",
-            {
-                "type": "cancelled_friend_request",
-                "payload": {
-                    "from_user_id": str(request.from_user.id),
-                    "from_user_username": str(request.from_user.username),
-                }
-            }
-        )
-        async_to_sync(channel_layer.group_send)(
-            f"user_{str(request.from_user.id)}",
-            {
-                "type": "cancelled_friend_request",
-                "payload": {
-                    "to_user_id": str(request.to_user.id),
-                    "to_user_username": request.to_user.username,
-                }
-            }
-        )
+        # channel_layer = get_channel_layer()
+        # print("print.. cancelled friend request registered")
+        # async_to_sync(channel_layer.group_send)(
+        #     f"user_{str(request.to_user.id)}",
+        #     {
+        #         "type": "cancelled_friend_request",
+        #         "payload": {
+        #             "from_user_id": str(request.from_user.id),
+        #             "from_user_username": str(request.from_user.username),
+        #         }
+        #     }
+        # )
+        # async_to_sync(channel_layer.group_send)(
+        #     f"user_{str(request.from_user.id)}",
+        #     {
+        #         "type": "cancelled_friend_request",
+        #         "payload": {
+        #             "to_user_id": str(request.to_user.id),
+        #             "to_user_username": request.to_user.username,
+        #         }
+        #     }
+        # )
 
     @staticmethod
     @transaction.atomic

@@ -5,7 +5,6 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 
-
 class ChatRoomService:
     @staticmethod
     @transaction.atomic
@@ -15,7 +14,7 @@ class ChatRoomService:
         user2 = UserProfile.objects.get(username=username)
         chatroom = ChatRoom.objects.filter(
             (Q(user1=user1, user2=user2) | Q(user1=user2, user2=user1))
-        ).select_related('blocked_by').only('blocked_by__username').first()
+        ).first()
         if chatroom:
             return chatroom, False
         chatroom = ChatRoom.objects.create(user1=user1, user2=user2)

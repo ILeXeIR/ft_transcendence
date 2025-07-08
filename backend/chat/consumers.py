@@ -1,10 +1,11 @@
 from datetime import timezone
+import json
+
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.core.exceptions import ObjectDoesNotExist
-import json
-from django.contrib.auth import get_user
-import json
+
+from .utils import notify_about_unread_chats
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
@@ -103,6 +104,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if not is_valid_user:
             await self.accept()
             await self.close(code=error_code)
+            await self.close(code=error_code)
             return
         self.room_group_name = f'chat_{self.room_id}'
         self.username = self.scope['user'].username
@@ -115,7 +117,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         key_user_count = f'chat:{self.room_group_name}:user_count'
         await self.redis.incr(key_user_count)
         await self.load_previous_messages()
-    
     async def is_user_in_room(self, user):
         from .models import ChatRoom
 
@@ -160,15 +161,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         from .models import ChatRoom
         data = json.loads(text_data)
-
-        # !! for notifi?
-        # self.room = await ChatRoom.objects.select_related('blocked_by', 'unread_by') \
-        #         .aget(id=self.room_id)
-        # if self.room.blocked_by:
-
-        self.room = await database_sync_to_async(ChatRoom.objects.get)(id=self.room_id)
-        blocked_by = await database_sync_to_async(lambda: self.room.blocked_by)()
-        if blocked_by:
+        print("\033[94m ws data receive; \033[0m", data)
+        self.room = await ChatRoom.objects.select_related('blocked_by', 'unread_by') \
+            .aget(id=self.room_id)
+        if self.room.blocked_by:
             await self.send(text_data=json.dumps({
                 'message': "This chatroom is blocked. You cannot send messages."
             }))

@@ -63,6 +63,11 @@ export async function createNotificationSocket () {
 
 export const handleFriendshipRequest = debugWrap(false, handleFriendshipRequest_original_func, "handleFriendshipRequest", "orange", DEBUGSOCKET);
 
+import { removeInOrOutRequest } from "./init_friends_data.js";
+import { populateInRequest } from "./init_friends_data.js";
+import { get_data } from "@social/init_friends_data.js"
+import { addFriendInList } from "../social/chat/chat_onload_functions.js"
+import { removeFriendInList } from "../social/chat/chat_onload_functions.js"
 
 async function handleFriendshipRequest_original_func(data) {
     const request_status = data.request_status;
